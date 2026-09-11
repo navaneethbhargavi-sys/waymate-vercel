@@ -1,0 +1,1 @@
+{"name":"waymate-vercel","private":true,"type":"module","scripts":{"build":"echo static-build-ready"},"engines":{"node":"22.x"}}
