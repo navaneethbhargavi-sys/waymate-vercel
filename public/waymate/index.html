@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Waymate — Date on your route</title>
+<meta name="theme-color" content="#0b2447" />
+<link rel="stylesheet" href="css/styles.css?v=7" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+<div class="app">
+
+  <header class="appbar" id="appbar">
+    <div class="brand">
+      <div class="logo">🚇</div>
+      <div>
+        <div class="brand-name">Waymate</div>
+        <div class="brand-sub"><span class="pill-line"></span> Date on your route • Delhi Metro</div>
+      </div>
+    </div>
+    <div id="appbarRight"></div>
+  </header>
+
+  <main id="content">
+    <section id="screen-auth" class="screen"></section>
+    <section id="screen-home" class="screen hidden"></section>
+    <section id="screen-ticket" class="screen hidden"></section>
+    <section id="screen-tickets" class="screen hidden"></section>
+    <section id="screen-buddy" class="screen hidden"></section>
+    <section id="screen-buddies" class="screen hidden"></section>
+  <section id="screen-search" class="screen hidden"></section>
+    <section id="screen-post" class="screen hidden"></section>
+    <section id="screen-chat" class="screen hidden"></section>
+    <section id="screen-profile" class="screen hidden"></section>
+  </main>
+
+  <nav class="tabbar hidden" id="tabbar">
+    <button data-tab="buddy" onclick="go('buddy')"><span>💞</span>Discover</button>
+    <button data-tab="buddies" onclick="go('buddies')"><span>🫂</span>Buddies</button>
+    <button data-tab="home" onclick="go('home')"><span>🎫</span>Book</button>
+    <button data-tab="profile" onclick="go('profile')"><span>👤</span>Profile</button>
+  </nav>
+
+  <!-- Station picker -->
+  <div class="modal hidden" id="picker" onclick="if(event.target===this)closePicker()">
+    <div class="sheet">
+      <div class="sheet-head">
+        <strong id="pickerTitle">Select station</strong>
+        <button class="icon-btn" onclick="closePicker()">✕</button>
+      </div>
+      <input id="pickerSearch" class="input" placeholder="Search station…" oninput="renderStationList()" autocomplete="off" />
+      <div id="pickerList" class="picker-list"></div>
+    </div>
+  </div>
+
+  <!-- Payment sheet -->
+  <div class="modal hidden" id="paywall" onclick="if(event.target===this)closePay()">
+    <div class="sheet">
+      <div class="sheet-head">
+        <strong>Pay for your ticket</strong>
+        <button class="icon-btn" onclick="closePay()">✕</button>
+      </div>
+      <div id="payBody"></div>
+    </div>
+  </div>
+
+
+
+  <!-- Chat overflow options -->
+  <div class="modal hidden" id="chatOptionsModal" onclick="if(event.target===this)closeChatOptions()">
+    <div class="sheet"><div class="sheet-head"><strong>Chat options</strong><button class="icon-btn" onclick="closeChatOptions()">✕</button></div><div id="chatOptionsBody"></div></div>
+  </div>
+
+  <!-- Profile editor -->
+  <div class="modal hidden" id="profileEditModal" onclick="if(event.target===this)closeProfileEditor()">
+    <div class="sheet"><div class="sheet-head"><strong>Edit profile</strong><button class="icon-btn" onclick="closeProfileEditor()">✕</button></div><div id="profileEditBody"></div></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="modal hidden" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+    <div class="sheet"><div class="sheet-head"><strong>Settings</strong><button class="icon-btn" onclick="closeSettings()">✕</button></div><div id="settingsBody"></div></div>
+  </div>
+
+  <!-- Safety tips -->
+  <div class="modal hidden" id="safetyModal" onclick="if(event.target===this)closeSafety()">
+    <div class="sheet">
+      <div class="sheet-head">
+        <strong>🛡️ Safety tips</strong>
+        <button class="icon-btn" onclick="closeSafety()">✕</button>
+      </div>
+      <ul class="safety-list">
+        <li>Meet near the station staff desk or a CCTV-covered area.</li>
+        <li>Share your live location with a family member.</li>
+        <li>Check the verified ✔ badge before meeting anyone.</li>
+        <li>Never share OTPs, card details or money.</li>
+        <li>Use the report button — DMRC security is present at every station.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js?v=8"></script>
+</body>
+</html>
