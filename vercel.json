@@ -1,1 +1,1 @@
-{"version":2,"buildCommand":"echo static-build-ready","outputDirectory":"public","functions":{"api/index.js":{"runtime":"nodejs22.x","includeFiles":["api/server.mjs"]}},"rewrites":[{"source":"/api/:path*","destination":"/api"}]} 
+{"version":2,"buildCommand":"echo static-build-ready","outputDirectory":"public","functions":{"api/index.js":{"runtime":"nodejs22.x","includeFiles":"api/server.mjs"}},"rewrites":[{"source":"/api/:path*","destination":"/api"}]}
