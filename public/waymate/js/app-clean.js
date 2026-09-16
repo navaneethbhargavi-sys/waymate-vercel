@@ -1223,11 +1223,12 @@ async function loadServerState() {
         go("auth");
         return;
       }
-      // The root shell has already authenticated this session. Keep the app
-      // usable immediately and let users complete their profile later.
-      state.user = null;
+      // The root Clerk shell has already authenticated this session. Never
+      // send an authenticated user to profile onboarding from the root app.
+      state.user = { id: "authenticated", name: "Waymate member", gender: "", age: 0, bio: "", photo: null, verified: true };
       state.reg = null;
-      go("auth");
+      try { await loadServerState(); } catch (_) { state.posts = []; state.trips = []; state.connections = []; }
+      go("buddy");
     } else {
       await loadServerState();
       startRealtimeMessages();
@@ -1236,9 +1237,10 @@ async function loadServerState() {
   } catch (e) {
     const embeddedAuthenticated = new URLSearchParams(location.search).get("embedded") === "authenticated";
     if (embeddedAuthenticated) {
-      state.user = null;
+      state.user = { id: "authenticated", name: "Waymate member", gender: "", age: 0, bio: "", photo: null, verified: true };
       state.reg = null;
-      go("auth");
+      state.posts = []; state.trips = []; state.connections = [];
+      go("buddy");
     } else {
       state.user = null;
       $("#screen-auth").innerHTML = '<div class="empty">Your account session could not be loaded. Please return to the Waymate sign-in screen and try again.</div>';
