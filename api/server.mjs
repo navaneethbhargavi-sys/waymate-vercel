@@ -59621,7 +59621,7 @@ app.use(
 // Waymate Supabase adapter: uses the migrated waymate-realtime project.
 var supabaseApi = (0, import_express5.Router)();
 var supabaseBase = () => (process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "").replace(/\/$/, "");
-var supabaseKey = () => process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "";
+var supabaseKey = () => process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || "";
 async function sb(path, options = {}) {
   const response = await fetch(`${supabaseBase()}/rest/v1/${path}`, { ...options, headers: { apikey: supabaseKey(), Authorization: `Bearer ${supabaseKey()}`, "Content-Type": "application/json", ...(options.headers || {}) } });
   const text = await response.text();
