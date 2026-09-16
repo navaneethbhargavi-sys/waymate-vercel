@@ -5,12 +5,24 @@
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-async function api(path, options = {}) {
-  // Use the live same-origin Clerk session. The token previously embedded in
-  // the iframe URL expires while the app remains open, breaking messages and
-  // search with intermittent authentication errors.
-  const headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+let liveClerkToken = new URLSearchParams(location.search).get("clerk_token") || null;
+function requestFreshClerkToken() {
+  return new Promise(resolve => {
+    let done = false;
+    const finish = token => { if (done) return; done = true; window.removeEventListener("message", onMessage); resolve(token || null); };
+    const onMessage = event => { if (event.data && event.data.type === "waymate-token") finish(event.data.token); };
+    window.addEventListener("message", onMessage);
+    window.parent.postMessage({ type: "waymate-token-request" }, "*");
+    setTimeout(() => finish(null), 2500);
+  });
+}
+async function api(path, options = {}, retry = true) {
+  const headers = Object.assign({ "Content-Type": "application/json" }, liveClerkToken ? { Authorization: "Bearer " + liveClerkToken } : {}, options.headers || {});
   const response = await fetch(path, Object.assign({}, options, { headers, credentials: "include" }));
+  if (response.status === 401 && retry) {
+    const fresh = await requestFreshClerkToken();
+    if (fresh) { liveClerkToken = fresh; return api(path, options, false); }
+  }
   if (!response.ok) {
     let message = "Request failed";
     try {
