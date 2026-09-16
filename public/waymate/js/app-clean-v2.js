@@ -1223,12 +1223,11 @@ async function loadServerState() {
         go("auth");
         return;
       }
-      // The root Clerk shell has already authenticated this session. Never
-      // send an authenticated user to profile onboarding from the root app.
-      state.user = { id: "authenticated", name: "Waymate member", gender: "", age: 0, bio: "", photo: null, verified: true };
-      state.reg = null;
-      try { await loadServerState(); } catch (_) { state.posts = []; state.trips = []; state.connections = []; }
-      go("buddy");
+      // The Clerk/Google session is valid, but no matching database profile exists.
+      // Keep this as real onboarding; never invent a synthetic user.
+      state.user = null;
+      state.reg = { step: 2, contact: "", name: "", gender: "", age: "", photo: null };
+      go("auth");
     } else {
       await loadServerState();
       startRealtimeMessages();
@@ -1237,10 +1236,9 @@ async function loadServerState() {
   } catch (e) {
     const embeddedAuthenticated = new URLSearchParams(location.search).get("embedded") === "authenticated";
     if (embeddedAuthenticated) {
-      state.user = { id: "authenticated", name: "Waymate member", gender: "", age: 0, bio: "", photo: null, verified: true };
-      state.reg = null;
-      state.posts = []; state.trips = []; state.connections = [];
-      go("buddy");
+      state.user = null;
+      state.reg = { step: 2, contact: "", name: "", gender: "", age: "", photo: null };
+      go("auth");
     } else {
       state.user = null;
       $("#screen-auth").innerHTML = '<div class="empty">Your account session could not be loaded. Please return to the Waymate sign-in screen and try again.</div>';
