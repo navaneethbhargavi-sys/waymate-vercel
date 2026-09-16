@@ -256,6 +256,7 @@ function renderAuth() {
       '<label class="field"><span>Age</span>' +
         '<input class="input" type="number" min="10" max="120" placeholder="e.g. 21" value="' + esc(state.reg.age) + '" oninput="state.reg.age=this.value" /></label>' +
       '<button class="btn primary block" onclick="regComplete()">Save profile →</button>' +
+      (!state.user ? '<button class="btn ghost block" onclick="skipProfileSetup()">Skip for now →</button>' : '') +
       (state.user ? '<button class="btn ghost block" onclick="state.reg={step:0};renderAuth()">Back</button>' : "") +
     "</div>";
 }
@@ -289,6 +290,32 @@ async function regComplete() {
 }
 
 function continueAs() { go("buddy"); }
+
+async function skipProfileSetup() {
+  // Keep onboarding optional: authenticated users can explore immediately and
+  // complete their profile later from the Profile tab.
+  state.user = {
+    id: "pending-profile",
+    name: "Traveler",
+    gender: "",
+    age: "",
+    bio: "",
+    photo: null,
+    verified: true,
+    contact: ""
+  };
+  state.reg = null;
+  try {
+    await loadServerState();
+    startRealtimeMessages();
+  } catch (e) {
+    state.posts = [];
+    state.trips = [];
+    state.connections = [];
+    toast("You’re in offline mode — profile setup is still available.");
+  }
+  go("buddy");
+}
 
 function handlePhoto(input) {
   const f = input.files && input.files[0];
