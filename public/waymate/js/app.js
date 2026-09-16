@@ -1242,8 +1242,29 @@ async function loadServerState() {
     const result = await api("/api/me");
     state.user = profileFromApi(result.user);
     if (!state.user) {
-      state.reg = { step: 2, contact: "", name: "", gender: "", age: "", photo: null };
-      go("auth");
+      // A valid authenticated session should enter the app immediately. Profile
+      // completion is available later from the Profile tab and must not block
+      // the main experience.
+      state.user = {
+        id: "pending-profile",
+        name: "Traveler",
+        gender: "",
+        age: "",
+        bio: "",
+        photo: null,
+        verified: true,
+        contact: ""
+      };
+      state.reg = null;
+      try {
+        await loadServerState();
+        startRealtimeMessages();
+      } catch (loadError) {
+        state.posts = [];
+        state.trips = [];
+        state.connections = [];
+      }
+      go("buddy");
     } else {
       await loadServerState();
       startRealtimeMessages();
